@@ -5,9 +5,9 @@ function get_all() {
 mb_internal_encoding("UTF-8");
 
 //$url_chaudiere = "http://X.X.X.X";
-$url_chaudiere = "http://192.168.1.53";
-$port_json = "4321";
-$password_json = "RwKS";
+$url_chaudiere = "http://X.X.X.X";
+$port_json = "XXXX";
+$password_json = "XXXX";
 $param = "all?";
 $url = $url_chaudiere.":".$port_json."/".$password_json."/";
 
