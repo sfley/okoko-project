@@ -1,0 +1,12 @@
+{
+  "listen": "127.0.0.1:8888",
+  "boiler_url": "",
+  "database": "./data/chaudiere.db",
+  "poll_seconds": 60,
+  "retention_days": 730,
+  "csv_dir": "",
+  "import_minutes": 60,
+  "backup_dir": "",
+  "timezone": "Europe/Paris",
+  "legacy_import_timezone": "UTC"
+}

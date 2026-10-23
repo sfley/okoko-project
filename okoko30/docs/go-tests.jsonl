@@ -1,0 +1,98 @@
+{"Time":"2026-10-23T08:14:22.127773804Z","Action":"start","Package":"chaudiere/cmd/chaudiere"}
+{"Time":"2026-10-23T08:14:22.127878001Z","Action":"output","Package":"chaudiere/cmd/chaudiere","Output":"?   \tchaudiere/cmd/chaudiere\t[no test files]\n"}
+{"Time":"2026-10-23T08:14:22.127895387Z","Action":"skip","Package":"chaudiere/cmd/chaudiere","Elapsed":0}
+{"Time":"2026-10-23T08:14:22.127905783Z","Action":"start","Package":"chaudiere/cmd/mariadb-import"}
+{"Time":"2026-10-23T08:14:22.127908166Z","Action":"output","Package":"chaudiere/cmd/mariadb-import","Output":"?   \tchaudiere/cmd/mariadb-import\t[no test files]\n"}
+{"Time":"2026-10-23T08:14:22.127909959Z","Action":"skip","Package":"chaudiere/cmd/mariadb-import","Elapsed":0}
+{"Time":"2026-10-23T08:14:22.46882204Z","Action":"start","Package":"chaudiere/internal/app"}
+{"Time":"2026-10-23T08:14:22.468975058Z","Action":"start","Package":"chaudiere/internal/web"}
+{"Time":"2026-10-23T08:14:22.468990962Z","Action":"output","Package":"chaudiere/internal/web","Output":"?   \tchaudiere/internal/web\t[no test files]\n"}
+{"Time":"2026-10-23T08:14:22.468998433Z","Action":"skip","Package":"chaudiere/internal/web","Elapsed":0}
+{"Time":"2026-10-23T08:14:22.471539624Z","Action":"run","Package":"chaudiere/internal/app","Test":"TestSnapshotIsCachedAndDoesNotContactBoiler"}
+{"Time":"2026-10-23T08:14:22.471566825Z","Action":"output","Package":"chaudiere/internal/app","Test":"TestSnapshotIsCachedAndDoesNotContactBoiler","Output":"=== RUN   TestSnapshotIsCachedAndDoesNotContactBoiler\n","OutputType":"frame"}
+{"Time":"2026-10-23T08:14:22.477450909Z","Action":"output","Package":"chaudiere/internal/app","Test":"TestSnapshotIsCachedAndDoesNotContactBoiler","Output":"--- PASS: TestSnapshotIsCachedAndDoesNotContactBoiler (0.01s)\n","OutputType":"frame"}
+{"Time":"2026-10-23T08:14:22.477463118Z","Action":"pass","Package":"chaudiere/internal/app","Test":"TestSnapshotIsCachedAndDoesNotContactBoiler","Elapsed":0.01}
+{"Time":"2026-10-23T08:14:22.477473413Z","Action":"run","Package":"chaudiere/internal/app","Test":"TestMissingValuesRemainNullAndStaleDataIsMarked"}
+{"Time":"2026-10-23T08:14:22.477475246Z","Action":"output","Package":"chaudiere/internal/app","Test":"TestMissingValuesRemainNullAndStaleDataIsMarked","Output":"=== RUN   TestMissingValuesRemainNullAndStaleDataIsMarked\n","OutputType":"frame"}
+{"Time":"2026-10-23T08:14:22.479265386Z","Action":"output","Package":"chaudiere/internal/app","Test":"TestMissingValuesRemainNullAndStaleDataIsMarked","Output":"--- PASS: TestMissingValuesRemainNullAndStaleDataIsMarked (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-23T08:14:22.479269953Z","Action":"pass","Package":"chaudiere/internal/app","Test":"TestMissingValuesRemainNullAndStaleDataIsMarked","Elapsed":0}
+{"Time":"2026-10-23T08:14:22.479272116Z","Action":"run","Package":"chaudiere/internal/app","Test":"TestConnectionSecretFileAndRedaction"}
+{"Time":"2026-10-23T08:14:22.479273719Z","Action":"output","Package":"chaudiere/internal/app","Test":"TestConnectionSecretFileAndRedaction","Output":"=== RUN   TestConnectionSecretFileAndRedaction\n","OutputType":"frame"}
+{"Time":"2026-10-23T08:14:22.481420375Z","Action":"output","Package":"chaudiere/internal/app","Test":"TestConnectionSecretFileAndRedaction","Output":"--- PASS: TestConnectionSecretFileAndRedaction (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-23T08:14:22.481434596Z","Action":"pass","Package":"chaudiere/internal/app","Test":"TestConnectionSecretFileAndRedaction","Elapsed":0}
+{"Time":"2026-10-23T08:14:22.481438422Z","Action":"run","Package":"chaudiere/internal/app","Test":"TestRestartPreservesMonthlyCorrectionsAndHistoricalRecharges"}
+{"Time":"2026-10-23T08:14:22.481440836Z","Action":"output","Package":"chaudiere/internal/app","Test":"TestRestartPreservesMonthlyCorrectionsAndHistoricalRecharges","Output":"=== RUN   TestRestartPreservesMonthlyCorrectionsAndHistoricalRecharges\n","OutputType":"frame"}
+{"Time":"2026-10-23T08:14:22.484372211Z","Action":"output","Package":"chaudiere/internal/app","Test":"TestRestartPreservesMonthlyCorrectionsAndHistoricalRecharges","Output":"--- PASS: TestRestartPreservesMonthlyCorrectionsAndHistoricalRecharges (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-23T08:14:22.484389627Z","Action":"pass","Package":"chaudiere/internal/app","Test":"TestRestartPreservesMonthlyCorrectionsAndHistoricalRecharges","Elapsed":0}
+{"Time":"2026-10-23T08:14:22.484393113Z","Action":"run","Package":"chaudiere/internal/app","Test":"TestPelletCalculationRegression"}
+{"Time":"2026-10-23T08:14:22.484395306Z","Action":"output","Package":"chaudiere/internal/app","Test":"TestPelletCalculationRegression","Output":"=== RUN   TestPelletCalculationRegression\n","OutputType":"frame"}
+{"Time":"2026-10-23T08:14:22.486635723Z","Action":"output","Package":"chaudiere/internal/app","Test":"TestPelletCalculationRegression","Output":"--- PASS: TestPelletCalculationRegression (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-23T08:14:22.486671567Z","Action":"pass","Package":"chaudiere/internal/app","Test":"TestPelletCalculationRegression","Elapsed":0}
+{"Time":"2026-10-23T08:14:22.486675472Z","Action":"run","Package":"chaudiere/internal/app","Test":"TestCSVImportDeduplicatesAndPreservesRefills"}
+{"Time":"2026-10-23T08:14:22.486677716Z","Action":"output","Package":"chaudiere/internal/app","Test":"TestCSVImportDeduplicatesAndPreservesRefills","Output":"=== RUN   TestCSVImportDeduplicatesAndPreservesRefills\n","OutputType":"frame"}
+{"Time":"2026-10-23T08:14:22.488575087Z","Action":"output","Package":"chaudiere/internal/app","Test":"TestCSVImportDeduplicatesAndPreservesRefills","Output":"--- PASS: TestCSVImportDeduplicatesAndPreservesRefills (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-23T08:14:22.488586775Z","Action":"pass","Package":"chaudiere/internal/app","Test":"TestCSVImportDeduplicatesAndPreservesRefills","Elapsed":0}
+{"Time":"2026-10-23T08:14:22.488591632Z","Action":"run","Package":"chaudiere/internal/app","Test":"TestUnavailableNASDoesNotBlockSnapshotOrSystem"}
+{"Time":"2026-10-23T08:14:22.488593685Z","Action":"output","Package":"chaudiere/internal/app","Test":"TestUnavailableNASDoesNotBlockSnapshotOrSystem","Output":"=== RUN   TestUnavailableNASDoesNotBlockSnapshotOrSystem\n","OutputType":"frame"}
+{"Time":"2026-10-23T08:14:22.490715584Z","Action":"output","Package":"chaudiere/internal/app","Test":"TestUnavailableNASDoesNotBlockSnapshotOrSystem","Output":"--- PASS: TestUnavailableNASDoesNotBlockSnapshotOrSystem (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-23T08:14:22.490728914Z","Action":"pass","Package":"chaudiere/internal/app","Test":"TestUnavailableNASDoesNotBlockSnapshotOrSystem","Elapsed":0}
+{"Time":"2026-10-23T08:14:22.490733541Z","Action":"run","Package":"chaudiere/internal/app","Test":"TestBackupIncludesCurrentWALAndPassesIntegrity"}
+{"Time":"2026-10-23T08:14:22.490735454Z","Action":"output","Package":"chaudiere/internal/app","Test":"TestBackupIncludesCurrentWALAndPassesIntegrity","Output":"=== RUN   TestBackupIncludesCurrentWALAndPassesIntegrity\n","OutputType":"frame"}
+{"Time":"2026-10-23T08:14:22.496458023Z","Action":"output","Package":"chaudiere/internal/app","Test":"TestBackupIncludesCurrentWALAndPassesIntegrity","Output":"--- PASS: TestBackupIncludesCurrentWALAndPassesIntegrity (0.01s)\n","OutputType":"frame"}
+{"Time":"2026-10-23T08:14:22.49646913Z","Action":"pass","Package":"chaudiere/internal/app","Test":"TestBackupIncludesCurrentWALAndPassesIntegrity","Elapsed":0.01}
+{"Time":"2026-10-23T08:14:22.496472966Z","Action":"run","Package":"chaudiere/internal/app","Test":"TestMutationRejectsForeignOriginAndDuplicateRefills"}
+{"Time":"2026-10-23T08:14:22.496474889Z","Action":"output","Package":"chaudiere/internal/app","Test":"TestMutationRejectsForeignOriginAndDuplicateRefills","Output":"=== RUN   TestMutationRejectsForeignOriginAndDuplicateRefills\n","OutputType":"frame"}
+{"Time":"2026-10-23T08:14:22.498309305Z","Action":"output","Package":"chaudiere/internal/app","Test":"TestMutationRejectsForeignOriginAndDuplicateRefills","Output":"--- PASS: TestMutationRejectsForeignOriginAndDuplicateRefills (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-23T08:14:22.498313011Z","Action":"pass","Package":"chaudiere/internal/app","Test":"TestMutationRejectsForeignOriginAndDuplicateRefills","Elapsed":0}
+{"Time":"2026-10-23T08:14:22.498318289Z","Action":"run","Package":"chaudiere/internal/app","Test":"TestHistoryNullAndExportAndSPARoutes"}
+{"Time":"2026-10-23T08:14:22.498319881Z","Action":"output","Package":"chaudiere/internal/app","Test":"TestHistoryNullAndExportAndSPARoutes","Output":"=== RUN   TestHistoryNullAndExportAndSPARoutes\n","OutputType":"frame"}
+{"Time":"2026-10-23T08:14:22.500352135Z","Action":"output","Package":"chaudiere/internal/app","Test":"TestHistoryNullAndExportAndSPARoutes","Output":"--- PASS: TestHistoryNullAndExportAndSPARoutes (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-23T08:14:22.5003553Z","Action":"pass","Package":"chaudiere/internal/app","Test":"TestHistoryNullAndExportAndSPARoutes","Elapsed":0}
+{"Time":"2026-10-23T08:14:22.500357523Z","Action":"run","Package":"chaudiere/internal/app","Test":"TestCancelledBoilerRequestDoesNotReachDevice"}
+{"Time":"2026-10-23T08:14:22.500358765Z","Action":"output","Package":"chaudiere/internal/app","Test":"TestCancelledBoilerRequestDoesNotReachDevice","Output":"=== RUN   TestCancelledBoilerRequestDoesNotReachDevice\n","OutputType":"frame"}
+{"Time":"2026-10-23T08:14:22.503475146Z","Action":"output","Package":"chaudiere/internal/app","Test":"TestCancelledBoilerRequestDoesNotReachDevice","Output":"--- PASS: TestCancelledBoilerRequestDoesNotReachDevice (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-23T08:14:22.503487154Z","Action":"pass","Package":"chaudiere/internal/app","Test":"TestCancelledBoilerRequestDoesNotReachDevice","Elapsed":0}
+{"Time":"2026-10-23T08:14:22.503489758Z","Action":"run","Package":"chaudiere/internal/app","Test":"TestDecodeBoilerText"}
+{"Time":"2026-10-23T08:14:22.503491481Z","Action":"output","Package":"chaudiere/internal/app","Test":"TestDecodeBoilerText","Output":"=== RUN   TestDecodeBoilerText\n","OutputType":"frame"}
+{"Time":"2026-10-23T08:14:22.503496318Z","Action":"output","Package":"chaudiere/internal/app","Test":"TestDecodeBoilerText","Output":"--- PASS: TestDecodeBoilerText (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-23T08:14:22.503498321Z","Action":"pass","Package":"chaudiere/internal/app","Test":"TestDecodeBoilerText","Elapsed":0}
+{"Time":"2026-10-23T08:14:22.503499793Z","Action":"run","Package":"chaudiere/internal/app","Test":"TestNFSMountCheckDoesNotAcceptUnrelatedPath"}
+{"Time":"2026-10-23T08:14:22.503501145Z","Action":"output","Package":"chaudiere/internal/app","Test":"TestNFSMountCheckDoesNotAcceptUnrelatedPath","Output":"=== RUN   TestNFSMountCheckDoesNotAcceptUnrelatedPath\n","OutputType":"frame"}
+{"Time":"2026-10-23T08:14:22.503502998Z","Action":"output","Package":"chaudiere/internal/app","Test":"TestNFSMountCheckDoesNotAcceptUnrelatedPath","Output":"--- PASS: TestNFSMountCheckDoesNotAcceptUnrelatedPath (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-23T08:14:22.50350449Z","Action":"pass","Package":"chaudiere/internal/app","Test":"TestNFSMountCheckDoesNotAcceptUnrelatedPath","Elapsed":0}
+{"Time":"2026-10-23T08:14:22.503505912Z","Action":"run","Package":"chaudiere/internal/app","Test":"TestBrowserFixtureServer"}
+{"Time":"2026-10-23T08:14:22.503506924Z","Action":"output","Package":"chaudiere/internal/app","Test":"TestBrowserFixtureServer","Output":"=== RUN   TestBrowserFixtureServer\n","OutputType":"frame"}
+{"Time":"2026-10-23T08:14:22.503508516Z","Action":"output","Package":"chaudiere/internal/app","Test":"TestBrowserFixtureServer","Output":"    browser_fixture_test.go:18: optional isolated browser fixture server\n"}
+{"Time":"2026-10-23T08:14:22.503511551Z","Action":"output","Package":"chaudiere/internal/app","Test":"TestBrowserFixtureServer","Output":"--- SKIP: TestBrowserFixtureServer (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-23T08:14:22.503513073Z","Action":"skip","Package":"chaudiere/internal/app","Test":"TestBrowserFixtureServer","Elapsed":0}
+{"Time":"2026-10-23T08:14:22.503514766Z","Action":"run","Package":"chaudiere/internal/app","Test":"TestRawBoilerTemperaturesNamesAndSentinels"}
+{"Time":"2026-10-23T08:14:22.503518832Z","Action":"output","Package":"chaudiere/internal/app","Test":"TestRawBoilerTemperaturesNamesAndSentinels","Output":"=== RUN   TestRawBoilerTemperaturesNamesAndSentinels\n","OutputType":"frame"}
+{"Time":"2026-10-23T08:14:22.504164071Z","Action":"output","Package":"chaudiere/internal/app","Test":"TestRawBoilerTemperaturesNamesAndSentinels","Output":"--- PASS: TestRawBoilerTemperaturesNamesAndSentinels (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-23T08:14:22.504167487Z","Action":"pass","Package":"chaudiere/internal/app","Test":"TestRawBoilerTemperaturesNamesAndSentinels","Elapsed":0}
+{"Time":"2026-10-23T08:14:22.504168879Z","Action":"run","Package":"chaudiere/internal/app","Test":"TestRawForecastFrenchDatesAndUnits"}
+{"Time":"2026-10-23T08:14:22.504170752Z","Action":"output","Package":"chaudiere/internal/app","Test":"TestRawForecastFrenchDatesAndUnits","Output":"=== RUN   TestRawForecastFrenchDatesAndUnits\n","OutputType":"frame"}
+{"Time":"2026-10-23T08:14:22.506293021Z","Action":"output","Package":"chaudiere/internal/app","Test":"TestRawForecastFrenchDatesAndUnits","Output":"--- PASS: TestRawForecastFrenchDatesAndUnits (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-23T08:14:22.506297467Z","Action":"pass","Package":"chaudiere/internal/app","Test":"TestRawForecastFrenchDatesAndUnits","Elapsed":0}
+{"Time":"2026-10-23T08:14:22.50629914Z","Action":"run","Package":"chaudiere/internal/app","Test":"TestForecastYearBoundaryAndInvalidDates"}
+{"Time":"2026-10-23T08:14:22.506300432Z","Action":"output","Package":"chaudiere/internal/app","Test":"TestForecastYearBoundaryAndInvalidDates","Output":"=== RUN   TestForecastYearBoundaryAndInvalidDates\n","OutputType":"frame"}
+{"Time":"2026-10-23T08:14:22.5063393Z","Action":"output","Package":"chaudiere/internal/app","Test":"TestForecastYearBoundaryAndInvalidDates","Output":"--- PASS: TestForecastYearBoundaryAndInvalidDates (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-23T08:14:22.506340893Z","Action":"pass","Package":"chaudiere/internal/app","Test":"TestForecastYearBoundaryAndInvalidDates","Elapsed":0}
+{"Time":"2026-10-23T08:14:22.506342095Z","Action":"run","Package":"chaudiere/internal/app","Test":"TestImportClockUTCConversionAndLegacyPreservation"}
+{"Time":"2026-10-23T08:14:22.506343336Z","Action":"output","Package":"chaudiere/internal/app","Test":"TestImportClockUTCConversionAndLegacyPreservation","Output":"=== RUN   TestImportClockUTCConversionAndLegacyPreservation\n","OutputType":"frame"}
+{"Time":"2026-10-23T08:14:22.508072144Z","Action":"output","Package":"chaudiere/internal/app","Test":"TestImportClockUTCConversionAndLegacyPreservation","Output":"--- PASS: TestImportClockUTCConversionAndLegacyPreservation (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-23T08:14:22.508076471Z","Action":"pass","Package":"chaudiere/internal/app","Test":"TestImportClockUTCConversionAndLegacyPreservation","Elapsed":0}
+{"Time":"2026-10-23T08:14:22.508087247Z","Action":"run","Package":"chaudiere/internal/app","Test":"TestImportPaginationKeepsAllOlderRuns"}
+{"Time":"2026-10-23T08:14:22.50808888Z","Action":"output","Package":"chaudiere/internal/app","Test":"TestImportPaginationKeepsAllOlderRuns","Output":"=== RUN   TestImportPaginationKeepsAllOlderRuns\n","OutputType":"frame"}
+{"Time":"2026-10-23T08:14:22.51079072Z","Action":"output","Package":"chaudiere/internal/app","Test":"TestImportPaginationKeepsAllOlderRuns","Output":"--- PASS: TestImportPaginationKeepsAllOlderRuns (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-23T08:14:22.510793764Z","Action":"pass","Package":"chaudiere/internal/app","Test":"TestImportPaginationKeepsAllOlderRuns","Elapsed":0}
+{"Time":"2026-10-23T08:14:22.510795427Z","Action":"run","Package":"chaudiere/internal/app","Test":"TestSetpoints"}
+{"Time":"2026-10-23T08:14:22.510796569Z","Action":"output","Package":"chaudiere/internal/app","Test":"TestSetpoints","Output":"=== RUN   TestSetpoints\n","OutputType":"frame"}
+{"Time":"2026-10-23T08:14:22.510798321Z","Action":"output","Package":"chaudiere/internal/app","Test":"TestSetpoints","Output":"--- PASS: TestSetpoints (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-23T08:14:22.510802217Z","Action":"pass","Package":"chaudiere/internal/app","Test":"TestSetpoints","Elapsed":0}
+{"Time":"2026-10-23T08:14:22.51080433Z","Action":"run","Package":"chaudiere/internal/app","Test":"TestTranslations"}
+{"Time":"2026-10-23T08:14:22.510805432Z","Action":"output","Package":"chaudiere/internal/app","Test":"TestTranslations","Output":"=== RUN   TestTranslations\n","OutputType":"frame"}
+{"Time":"2026-10-23T08:14:22.510807325Z","Action":"output","Package":"chaudiere/internal/app","Test":"TestTranslations","Output":"--- PASS: TestTranslations (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-23T08:14:22.510808777Z","Action":"pass","Package":"chaudiere/internal/app","Test":"TestTranslations","Elapsed":0}
+{"Time":"2026-10-23T08:14:22.510810029Z","Action":"output","Package":"chaudiere/internal/app","Output":"PASS\n","OutputType":"frame"}
+{"Time":"2026-10-23T08:14:22.511508386Z","Action":"output","Package":"chaudiere/internal/app","Output":"ok  \tchaudiere/internal/app\t0.043s\n"}
+{"Time":"2026-10-23T08:14:22.511522777Z","Action":"pass","Package":"chaudiere/internal/app","Elapsed":0.043}

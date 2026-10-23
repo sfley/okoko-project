@@ -1,0 +1,30 @@
+{
+  "ImportCSVDir": {
+    "identical_after_gofmt": true,
+    "sha256": "6f5345cb5787f113969ab071b1c7a37ff82e78c009991fa053ef0a117ab4dd46"
+  },
+  "csvFloat": {
+    "identical_after_gofmt": true,
+    "sha256": "350ead4ba4c094af798ca6401d254b0fa9b9b629f2b8b0c15067f649ca9cdd36"
+  },
+  "csvInt": {
+    "identical_after_gofmt": true,
+    "sha256": "2b626280cf24e6ace8ebca55ece5de211a50840335d96f83d78de1f281e7d858"
+  },
+  "field": {
+    "identical_after_gofmt": true,
+    "sha256": "1c36eeaa58f9d131e3cee60d80ab73260ab3425711387ae1756722d2723ab946"
+  },
+  "importOneCSV": {
+    "identical_after_gofmt": true,
+    "sha256": "e342358c6cde9c95dcfcf216ca13d73e47f712dbe1dc566f1496be8a0c9e60d4"
+  },
+  "monthlyStockMethod": {
+    "identical_after_gofmt": true,
+    "sha256": "916c0909ceaab2c489fb5f262d076d48e592d3c9b90f43b7c82aeac0207958e9"
+  },
+  "recalculateYear": {
+    "identical_after_gofmt": true,
+    "sha256": "1d9d39871977ec7dc5650e661bd76a011a49ace1779c47bda79a1e197eb8fac9"
+  }
+}

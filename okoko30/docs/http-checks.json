@@ -1,0 +1,73 @@
+{
+  "version": "3.0.1",
+  "checked_at": "2026-10-23T08:18:35Z",
+  "checks": [
+    {
+      "path": "/health",
+      "status": 200,
+      "bytes": 3,
+      "milliseconds": 7.69
+    },
+    {
+      "path": "/api/v3/snapshot",
+      "status": 200,
+      "bytes": 790,
+      "milliseconds": 0.74
+    },
+    {
+      "path": "/api/v3/system?page=1",
+      "status": 200,
+      "bytes": 328,
+      "milliseconds": 0.88
+    },
+    {
+      "path": "/api/v3/weather",
+      "status": 200,
+      "bytes": 231,
+      "milliseconds": 0.41
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "bytes": 656,
+      "milliseconds": 0.5
+    },
+    {
+      "path": "/chauffage",
+      "status": 200,
+      "bytes": 656,
+      "milliseconds": 0.36
+    },
+    {
+      "path": "/analyse",
+      "status": 200,
+      "bytes": 656,
+      "milliseconds": 0.39
+    },
+    {
+      "path": "/pellets",
+      "status": 200,
+      "bytes": 656,
+      "milliseconds": 0.35
+    },
+    {
+      "path": "/meteo",
+      "status": 200,
+      "bytes": 656,
+      "milliseconds": 0.36
+    },
+    {
+      "path": "/system",
+      "status": 200,
+      "bytes": 656,
+      "milliseconds": 0.42
+    },
+    {
+      "path": "/assets/index-nlcfHi2W.js",
+      "status": 200,
+      "encoding": "gzip",
+      "bytes": 16017,
+      "uncompressed_bytes": 50411
+    }
+  ]
+}

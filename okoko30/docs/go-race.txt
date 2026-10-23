@@ -1,0 +1,4 @@
+?   	chaudiere/cmd/chaudiere	[no test files]
+?   	chaudiere/cmd/mariadb-import	[no test files]
+ok  	chaudiere/internal/app	1.697s
+?   	chaudiere/internal/web	[no test files]

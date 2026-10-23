@@ -1,0 +1,2 @@
+build/okoko30-linux-arm64:        ELF 64-bit LSB executable, ARM aarch64, version 1 (SYSV), statically linked, Go BuildID=2P29489lbB2xyRFhQg7-/tuhHhjB0oAklZUeKFD6M/I9rybWJV9myYPhvHAWng/cAs8YfnV_xnm6rwuZPOM, BuildID[sha1]=421ec05c2a316525c9d06c742088ceb111b3753e, stripped
+build/mariadb-import-linux-arm64: ELF 64-bit LSB executable, ARM aarch64, version 1 (SYSV), statically linked, Go BuildID=kgZ6OJ2fwNc4WbbGGJjP/z22y0NMlKQo_Jeu8GF0p/vvrpBAk_j8xdsoMJGyOD/4idEVHx06mSgsNKZaPRu, BuildID[sha1]=f7eafac5419b215b850744637e576f1a0ffd61bf, stripped
