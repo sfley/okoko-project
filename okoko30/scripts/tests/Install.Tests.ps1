@@ -1,137 +1,169 @@
 ﻿param()
 $ErrorActionPreference = 'Stop'
 $project = Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
-$fixture = Join-Path ([IO.Path]::GetTempPath()) ("OKOKO test d'installation " + [guid]::NewGuid().ToString('N'))
+$entry = Join-Path $project 'INSTALLER-OKOKO.cmd'
+$text = [IO.File]::ReadAllText($entry)
+$marker = ':OKOKO_' + 'POWERSHELL'
+$body = $text.Substring($text.IndexOf($marker) + $marker.Length)
+$fixture = Join-Path ([IO.Path]::GetTempPath()) ("OKOKO reprise d'installation " + [guid]::NewGuid().ToString('N'))
 $results = [Collections.Generic.List[object]]::new()
-$oldTrace = $env:OKOKO_TEST_TRACE
-$oldFailure = $env:OKOKO_TEST_FAILURE
-$oldRoot = $env:OKOKO_INSTALL_ROOT
-$oldRouter = $env:OKOKO_INSTALL_ROUTER
-$oldNativeExit = $global:LASTEXITCODE
-$oldSearchPath = $env:PATH
-$runtime = if ($PSVersionTable.PSEdition -eq 'Desktop') { Join-Path $PSHOME 'powershell.exe' } elseif ($env:OS -eq 'Windows_NT') { Join-Path $PSHOME 'pwsh.exe' } else { Join-Path $PSHOME 'pwsh' }
-function Check([bool]$Condition, [string]$Message) { if (-not $Condition) { throw $Message } }
-function Scenario([string]$Name, [scriptblock]$Body) {
-    Clear-Content -LiteralPath $env:OKOKO_TEST_TRACE
-    $env:OKOKO_TEST_FAILURE = ''
-    & $Body
+$variables = @('OKOKO_INSTALL_ROOT','OKOKO_INSTALL_FILE','OKOKO_INSTALL_ROUTER','OKOKO_TEST_LOG','OKOKO_TEST_FAIL','OKOKO_TEST_REMOTE','PATH','GOOS','GOARCH','CGO_ENABLED')
+$saved = @{}
+foreach ($name in $variables) { $saved[$name] = [Environment]::GetEnvironmentVariable($name) }
+$oldExit = $global:LASTEXITCODE
+$oldLocation = Get-Location
+function Check([bool]$Condition,[string]$Message) { if (-not $Condition) { throw $Message } }
+function Record([string]$Message) { Add-Content -LiteralPath $env:OKOKO_TEST_LOG -Value $Message }
+function Actions { @(Get-Content -LiteralPath $env:OKOKO_TEST_LOG | Where-Object { $_ -and $_ -notmatch ':version$' }) }
+function Scenario([string]$Name,[scriptblock]$Action) {
+    Clear-Content -LiteralPath $env:OKOKO_TEST_LOG
+    $env:OKOKO_TEST_FAIL = ''
+    & $Action
     $results.Add([pscustomobject]@{name=$Name;status='passed'})
 }
-function Events { @((Get-Content -LiteralPath $env:OKOKO_TEST_TRACE) | Where-Object { $_ }) }
-try {
-    $scripts = Join-Path $fixture 'scripts'
-    New-Item -ItemType Directory -Path $scripts -Force | Out-Null
-    # Simulated deployment must not require a real SSH client, even in preparation-only mode.
-    $stubBin = Join-Path $fixture 'bin'
-    New-Item -ItemType Directory -Path $stubBin -Force | Out-Null
-    foreach ($tool in @('ssh','scp')) {
-        if ($env:OS -eq 'Windows_NT') {
-            Set-Content -Encoding ASCII -LiteralPath (Join-Path $stubBin ($tool + '.cmd')) -Value '@exit /b 97'
-        } else {
-            $stub = Join-Path $stubBin $tool
-            [IO.File]::WriteAllText($stub, "#!/bin/sh`nexit 97`n")
-            & chmod +x $stub
-            if ($LASTEXITCODE -ne 0) { throw 'Cannot prepare test command' }
-        }
-    }
-    $env:PATH = $stubBin + [IO.Path]::PathSeparator + $oldSearchPath
-    $env:OKOKO_TEST_TRACE = Join-Path $fixture 'trace.txt'
-    Set-Content -LiteralPath $env:OKOKO_TEST_TRACE -Value ''
-    Copy-Item -LiteralPath (Join-Path $project 'scripts/Install.ps1') -Destination $scripts
-    @'
-param()
-Add-Content -LiteralPath $env:OKOKO_TEST_TRACE -Value 'test'
-if ($env:OKOKO_TEST_FAILURE -eq 'test') { throw 'Test failure requested' }
-'@ | Set-Content -Encoding UTF8 -LiteralPath (Join-Path $scripts 'Test.ps1')
-    @'
-param([switch]$SkipTests)
-if (-not $SkipTests) { throw 'Tests would run twice' }
-Add-Content -LiteralPath $env:OKOKO_TEST_TRACE -Value 'build'
-if ($env:OKOKO_TEST_FAILURE -eq 'build') { throw 'Build failure requested' }
-'@ | Set-Content -Encoding UTF8 -LiteralPath (Join-Path $scripts 'Build.ps1')
-    @'
-param([string]$Router, [switch]$UseExistingBuild)
-if (-not $UseExistingBuild) { throw 'Build would run twice' }
-if ($Router -ne '127.0.0.1') { throw 'Unexpected target' }
-Add-Content -LiteralPath $env:OKOKO_TEST_TRACE -Value 'deploy'
-if ($env:OKOKO_TEST_FAILURE -eq 'deploy') { throw 'Deploy failure requested' }
-'@ | Set-Content -Encoding UTF8 -LiteralPath (Join-Path $scripts 'Deploy.ps1')
-    $install = Join-Path $scripts 'Install.ps1'
-    Scenario 'single launcher, valid PowerShell syntax and Windows encoding' {
-        Check (@(Get-ChildItem -LiteralPath $project -Filter '*.cmd').Count -eq 1) 'Expected one public CMD launcher'
-        foreach ($file in Get-ChildItem -LiteralPath (Join-Path $project 'scripts') -Filter '*.ps1' -Recurse) {
-            $tokens = $null; $issues = $null
-            $ast = [Management.Automation.Language.Parser]::ParseFile($file.FullName, [ref]$tokens, [ref]$issues)
-            Check (-not $issues) ("Invalid PowerShell syntax: " + $file.Name)
-            $bytes = [IO.File]::ReadAllBytes($file.FullName)
-            Check ($bytes.Length -ge 3 -and $bytes[0] -eq 239 -and $bytes[1] -eq 187 -and $bytes[2] -eq 191) ("Missing UTF-8 BOM: " + $file.Name)
-            $policyCalls = $ast.FindAll({param($node) $node -is [Management.Automation.Language.CommandAst] -and $node.GetCommandName() -eq 'Set-ExecutionPolicy'}, $true)
-            Check ($policyCalls.Count -eq 0) 'Execution policy must not be changed'
-        }
-    }
-    Scenario 'preparation runs tests and build once without deployment' {
-        & $install -PrepareOnly *> $null
-        Check (((Events) -join ',') -eq 'test,build') 'Incorrect preparation sequence'
-    }
-    Scenario 'deployment follows tests and build, without duplicate work' {
-        & $install -Router '127.0.0.1' *> $null
-        Check (((Events) -join ',') -eq 'test,build,deploy') 'Incorrect deployment sequence'
-    }
-    foreach ($stage in @('test','build','deploy')) {
-        Scenario ("failure stops the chain at " + $stage) {
-            $env:OKOKO_TEST_FAILURE = $stage
-            $failed = $false
-            try { & $install -Router '127.0.0.1' *> $null } catch { $failed = $true }
-            Check $failed 'Failure was swallowed'
-            $expected = switch ($stage) { 'test' {'test'} 'build' {'test,build'} 'deploy' {'test,build,deploy'} }
-            Check (((Events) -join ',') -eq $expected) 'Chain continued after an error'
-        }
-    }
-    Scenario 'invalid target rejected before tests or deployment' {
-        $failed = $false
-        try { & $install -Router 'https://invalid.example' *> $null } catch { $failed = $true }
-        Check ($failed -and (Events).Count -eq 0) 'Invalid target accepted'
-    }
-    $cmd = Get-Content -Raw -LiteralPath (Join-Path $project 'INSTALLER-OKOKO.cmd')
-    $line = ($cmd -split "`n" | Where-Object { $_ -match '^powershell.exe ' })
-    Check ($line -match '-Command "(?<body>.*)"\s*$') 'Missing inline bootstrap'
-    $bootstrap = $Matches['body']
-    Check ($bootstrap -notmatch 'Set-ExecutionPolicy|Bypass') 'Policy override found in bootstrap'
-    $unblockMock = @'
+function Run-Payload { & ([scriptblock]::Create($body)) *> $null }
 function Unblock-File {
- [CmdletBinding()]
- param([Parameter(ValueFromPipeline=$true)]$InputObject)
- process {
-  if ($env:OKOKO_TEST_FAILURE -eq 'unblock') { throw 'Unblock failure requested' }
-  Add-Content -LiteralPath $env:OKOKO_TEST_TRACE -Value 'unblock'
- }
+    [CmdletBinding()]
+    param([Parameter(ValueFromPipeline=$true)]$InputObject)
+    process { if ($env:OKOKO_TEST_FAIL -eq 'unblock') { throw 'Unblock failure requested' } }
 }
-'@
-    $env:OKOKO_INSTALL_ROOT = $fixture
-    $env:OKOKO_INSTALL_ROUTER = '127.0.0.1'
-    Scenario 'real bootstrap unblocks before loading scripts, including paths with spaces and apostrophes' {
-        & $runtime -NoProfile -Command ($unblockMock + "`n" + $bootstrap) *> $null
-        Check ($LASTEXITCODE -eq 0) 'Bootstrap failed'
-        $events = Events
-        Check ($events.Count -gt 3 -and ($events[-3..-1] -join ',') -eq 'test,build,deploy') 'Bootstrap sequence incorrect'
-        Check (@($events[0..($events.Count-4)] | Where-Object { $_ -ne 'unblock' }).Count -eq 0) 'Script loaded before unblock'
+function node { $global:LASTEXITCODE=0; Record 'node:version'; '24.19.0' }
+function Invoke-NpmStub {
+    $global:LASTEXITCODE=0
+    if ($args[0] -eq '--version') { Record 'npm:version'; '11.9.0'; return }
+    $operation = $args -join ' '
+    Record "npm:$operation"
+    if ($env:OKOKO_TEST_FAIL -eq $operation) { $global:LASTEXITCODE=37; return }
+    if ($operation -eq 'ci') {
+        foreach ($file in @('node_modules/.package-lock.json','node_modules/react/package.json','node_modules/vite/package.json')) {
+            $path = Join-Path (Join-Path $env:OKOKO_INSTALL_ROOT 'frontend') $file
+            New-Item -ItemType Directory -Force (Split-Path $path -Parent) | Out-Null
+            Set-Content -LiteralPath $path -Value '{}'
+        }
     }
-    Scenario 'unblock failure exits nonzero before running any script' {
-        $env:OKOKO_TEST_FAILURE = 'unblock'
-        & $runtime -NoProfile -Command ($unblockMock + "`n" + $bootstrap) *> $null
-        Check ($LASTEXITCODE -ne 0 -and (Events).Count -eq 0) 'Unblock failure was ignored'
+    if ($operation -eq 'run build') {
+        $dist = Join-Path $env:OKOKO_INSTALL_ROOT 'backend/internal/web/dist'
+        New-Item -ItemType Directory -Force (Join-Path $dist 'assets') | Out-Null
+        $source = Get-Content -Raw -LiteralPath (Join-Path $env:OKOKO_INSTALL_ROOT 'frontend/src/value.js')
+        Set-Content -LiteralPath (Join-Path $dist 'index.html') -Value $source
+        Set-Content -LiteralPath (Join-Path $dist 'assets/app.js') -Value $source
     }
-    $report = [pscustomobject]@{powershell=$PSVersionTable.PSVersion.ToString();platform=$PSVersionTable.OS;windows_cmd_executed=$false;unblock='simulated';deployment='simulated';results=$results.ToArray()}
-    $output = Join-Path $project 'test-results'
-    New-Item -ItemType Directory -Path $output -Force | Out-Null
-    $report | ConvertTo-Json -Depth 5 | Set-Content -Encoding UTF8 -LiteralPath (Join-Path $output 'windows-launcher-tests.json')
-    Write-Host ("Windows launcher: {0} checks passed (PowerShell {1}; platform: {2})." -f $results.Count, $PSVersionTable.PSVersion, $PSVersionTable.OS)
+}
+function go {
+    $global:LASTEXITCODE=0
+    if ($args[0] -eq 'version') { Record 'go:version'; 'go version go1.27.3 linux/amd64'; return }
+    Record ('go:' + ($args -join ' '))
+    if ($env:OKOKO_TEST_FAIL -eq 'go') { $global:LASTEXITCODE=38; return }
+    if ($args[0] -eq 'build') {
+        $position = [Array]::IndexOf($args,'-o')
+        Check ($position -ge 0) 'Missing Go output path'
+        Set-Content -LiteralPath $args[$position+1] -Value 'BINARY FOR TESTS ONLY'
+    }
+}
+function ssh {
+    $incoming = ($input | Out-String)
+    $global:LASTEXITCODE=0
+    if ($incoming -match 'OKOKO_DEPLOY_REQUIRED') {
+        Record 'ssh:probe'
+        if ($env:OKOKO_TEST_FAIL -eq 'ssh') { $global:LASTEXITCODE=255; return }
+        if ($env:OKOKO_TEST_REMOTE -eq 'same') {
+            'OKOKO_HASH=' + (Get-FileHash -LiteralPath (Join-Path $env:OKOKO_INSTALL_ROOT 'build/okoko30-linux-arm64') -Algorithm SHA256).Hash.ToLowerInvariant()
+        } else { 'OKOKO_DEPLOY_REQUIRED' }
+    } else { Record 'ssh:deploy' }
+}
+function scp { Record 'scp:upload'; $global:LASTEXITCODE=0 }
+try {
+    foreach ($file in @('frontend/package.json','frontend/package-lock.json','frontend/index.html','frontend/vite.config.js','frontend/src/value.js','frontend/tests/value.test.js','backend/go.mod','backend/go.sum','backend/cmd/main.go','backend/internal/app/app.go','backend/internal/web/web.go','scripts/remote-deploy.sh')) {
+        $path = Join-Path $fixture $file
+        New-Item -ItemType Directory -Force (Split-Path $path -Parent) | Out-Null
+        Set-Content -LiteralPath $path -Value 'FIXTURE ONLY'
+    }
+    $bin = Join-Path $fixture 'bin'
+    New-Item -ItemType Directory -Force $bin | Out-Null
+    foreach ($tool in @('ssh','scp')) {
+        if ($env:OS -eq 'Windows_NT') { Set-Content -LiteralPath (Join-Path $bin ($tool+'.cmd')) -Value '@exit /b 97' }
+        else { $path=Join-Path $bin $tool; [IO.File]::WriteAllText($path,"#!/bin/sh`nexit 97`n"); & chmod +x $path }
+    }
+    $env:PATH = $bin + [IO.Path]::PathSeparator + $saved['PATH']
+    $env:OKOKO_INSTALL_ROOT = $fixture + [IO.Path]::DirectorySeparatorChar
+    $env:OKOKO_INSTALL_FILE = $entry
+    $env:OKOKO_INSTALL_ROUTER = '--prepare'
+    $env:OKOKO_TEST_LOG = Join-Path $fixture 'trace.txt'
+    Set-Content -LiteralPath $env:OKOKO_TEST_LOG -Value ''
+    $npmName = if ($env:OS -eq 'Windows_NT') { 'npm.cmd' } else { 'npm' }
+    Set-Item -Path ("Function:\" + $npmName) -Value ${function:Invoke-NpmStub}
+    Scenario 'single launcher keeps PowerShell open and contains no policy override' {
+        Check ($text -match '^@echo off') 'Missing CMD entry'
+        $line = $text -split "`n" | Where-Object { $_ -match '^powershell.exe ' }
+        Check ($line -match '-NoExit\b' -and $line -notmatch 'Set-ExecutionPolicy|Bypass') 'Window/policy settings incorrect'
+        Check ($line -match '-Command "(?<command>.*)"\s*$') 'Missing bootstrap'
+        foreach ($source in @($Matches['command'],$body)) {
+            $tokens=$null; $issues=$null
+            [Management.Automation.Language.Parser]::ParseInput($source,[ref]$tokens,[ref]$issues) | Out-Null
+            Check (-not $issues) 'Invalid PowerShell syntax'
+        }
+        Check ($line -notmatch '\bexit\s+[01]\b') 'Bootstrap would close the window'
+    }
+    Scenario 'first run performs the preparation steps' {
+        Run-Payload
+        $events=Actions
+        Check (@($events | Where-Object {$_ -eq 'npm:ci'}).Count -eq 1) 'Dependencies not installed once'
+        Check (@($events | Where-Object {$_ -eq 'npm:test'}).Count -eq 1) 'Frontend tests not run once'
+        Check (@($events | Where-Object {$_ -like 'go:build *'}).Count -eq 2) 'Both binaries must be built'
+    }
+    Scenario 'second run skips all unchanged successful stages' { Run-Payload; Check (@(Actions).Count -eq 0) 'Successful steps repeated' }
+    Scenario 'source changes invalidate dependent steps but preserve dependencies' {
+        Add-Content -LiteralPath (Join-Path $fixture 'frontend/src/value.js') -Value 'changed'
+        Run-Payload; $events=Actions
+        Check ($events -notcontains 'npm:ci' -and $events -contains 'npm:test' -and $events -contains 'npm:run build') 'Frontend invalidation incorrect'
+        Check (@($events | Where-Object {$_ -like 'go:test *'}).Count -eq 1) 'Changed bundle must be tested'
+    }
+    Scenario 'corrupted binary rebuilds ARM64 without repeating tests' {
+        Add-Content -LiteralPath (Join-Path $fixture 'build/okoko30-linux-arm64') -Value 'corruption'
+        Run-Payload; $events=Actions
+        Check ($events.Count -eq 2 -and @($events | Where-Object {$_ -like 'go:build *'}).Count -eq 2) 'Artifact corruption not detected'
+    }
+    Scenario 'failed stage stops the chain and is not marked successful' {
+        Add-Content -LiteralPath (Join-Path $fixture 'frontend/src/value.js') -Value 'changed again'
+        $env:OKOKO_TEST_FAIL='test'; $failed=$false
+        try { Run-Payload } catch { $failed=$true }
+        Check ($failed -and ((Actions) -join ',') -eq 'npm:test') 'Chain continued after failure'
+        $state=Get-Content -Raw -LiteralPath (Join-Path $fixture 'test-results/install-resume.json') | ConvertFrom-Json
+        Check ($null -eq $state.'frontend-tests') 'Failed stage was checkpointed'
+    }
+    Scenario 'restart retries the failed stage while skipping completed dependencies' {
+        Run-Payload; $events=Actions
+        Check ($events -notcontains 'npm:ci' -and $events -contains 'npm:test' -and $events -contains 'npm:run build') 'Resume incorrect'
+    }
+    Scenario 'missing installed dependency invalidates installation checkpoint' {
+        Remove-Item -LiteralPath (Join-Path $fixture 'frontend/node_modules/react/package.json')
+        Run-Payload; Check (((Actions) -join ',') -eq 'npm:ci') 'Missing dependency not detected'
+    }
+    Scenario 'SSH failure stops before transfer or deployment' {
+        $env:OKOKO_INSTALL_ROUTER='127.0.0.1'; $env:OKOKO_TEST_FAIL='ssh'; $failed=$false
+        try { Run-Payload } catch { $failed=$true }
+        Check ($failed -and ((Actions) -join ',') -eq 'ssh:probe') 'SSH failure ignored'
+    }
+    Scenario 'verified identical active remote binary skips deployment' {
+        $env:OKOKO_TEST_REMOTE='same'; Run-Payload
+        Check (((Actions) -join ',') -eq 'ssh:probe') 'Already deployed binary was transferred'
+    }
+    Scenario 'different remote binary triggers one transfer and deployment' {
+        $env:OKOKO_TEST_REMOTE='different'; Run-Payload
+        Check (((Actions) -join ',') -eq 'ssh:probe,scp:upload,ssh:deploy') 'Deployment sequence incorrect'
+    }
+    Scenario 'unblock failure stops before any tool is run' {
+        $env:OKOKO_TEST_FAIL='unblock'; $failed=$false
+        try { Run-Payload } catch { $failed=$true }
+        Check ($failed -and @(Actions).Count -eq 0) 'Unblock failure ignored'
+    }
+    $output=Join-Path $project 'test-results'
+    New-Item -ItemType Directory -Force $output | Out-Null
+    [pscustomobject]@{powershell=$PSVersionTable.PSVersion.ToString();platform=$PSVersionTable.OS;windows_cmd_executed=$false;unblock='simulated';native_tools='simulated';deployment='simulated';results=$results.ToArray()} | ConvertTo-Json -Depth 6 | Set-Content -Encoding UTF8 -LiteralPath (Join-Path $output 'windows-launcher-tests.json')
+    Write-Host ("Windows launcher: {0} checks passed; resume, artifact validation and stop-on-error verified (PowerShell {1}, Linux/Windows console behavior not executed)." -f $results.Count,$PSVersionTable.PSVersion)
 } finally {
-    $env:OKOKO_TEST_TRACE = $oldTrace
-    $env:OKOKO_TEST_FAILURE = $oldFailure
-    $env:OKOKO_INSTALL_ROOT = $oldRoot
-    $env:OKOKO_INSTALL_ROUTER = $oldRouter
-    $env:PATH = $oldSearchPath
-    $global:LASTEXITCODE = $oldNativeExit
+    Set-Location -LiteralPath $oldLocation.Path
+    foreach ($name in $variables) { [Environment]::SetEnvironmentVariable($name,$saved[$name]) }
+    $global:LASTEXITCODE=$oldExit
     if (Test-Path -LiteralPath $fixture) { Remove-Item -LiteralPath $fixture -Recurse -Force }
 }

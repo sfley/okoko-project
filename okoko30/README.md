@@ -37,7 +37,7 @@ Sous Windows, un seul lanceur enchaîne le déblocage des fichiers, les prérequ
 .\INSTALLER-OKOKO.cmd ADRESSE_DU_ROUTEUR
 ```
 
-Sans argument, il demande l’adresse du routeur ; une réponse vide limite le travail aux tests et à la compilation. Le lanceur respecte `RemoteSigned`, sans `Set-ExecutionPolicy` ni `Bypass`. Il s’arrête à la première erreur et conserve les sauvegardes et le retour arrière. Les scripts dans `scripts/` sont ses modules internes : aucune succession de scripts à lancer manuellement.
+Sans argument, il demande l’adresse du routeur ; une réponse vide limite le travail aux tests et à la compilation. Le lanceur respecte `RemoteSigned`, sans `Set-ExecutionPolicy` ni `Bypass`. Il s’arrête à la première erreur et conserve les sauvegardes et le retour arrière. Ce fichier est autonome : aucune succession de scripts à lancer manuellement. Il reste ouvert et reprend les étapes réussies si leurs fichiers sont inchangés. Voir `docs/LANCEUR-WINDOWS.md`.
 
 ## Aucun mot de passe dans les sources
 
