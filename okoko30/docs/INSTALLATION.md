@@ -5,11 +5,17 @@
 Go 1.24 minimum (validation effectuée avec Go 1.27.3), Node.js 20.19 ou supérieur (validation avec Node 24), npm et un navigateur Chromium pour les tests visuels. Les fichiers statiques précompilés sont inclus ; Go peut donc compiler le backend sans Node si le frontend ne change pas.
 
 1. Décompresser l’archive dans un nouveau dossier. Conserver l’ancienne installation.
-2. Lancer `01-TESTER.cmd` : installation par `npm ci`, compilation du frontend, vérification des modules, analyse et tests Go.
-3. Lancer `02-COMPILER-ARM64.cmd` pour obtenir `build/okoko30-linux-arm64` et l’outil de migration. La variable CGO est désactivée pour ARM64.
-4. `03-DEMARRER-LOCAL.cmd` démarre une installation locale sur le port 8888 avec la configuration d’exemple.
+2. Dans ce dossier, lancer une seule commande :
 
-Si Windows bloque les scripts téléchargés, les examiner puis autoriser leur exécution selon la politique de votre poste. Les scripts ne changent pas la politique d’exécution de Windows.
+```powershell
+.\INSTALLER-OKOKO.cmd ADRESSE_DU_ROUTEUR
+```
+
+Ce lanceur débloque les fichiers avec `Unblock-File` avant de charger les scripts PowerShell. Il vérifie Node.js, npm, Go et le client OpenSSH, installe les dépendances frontend, exécute les tests, compile le frontend et Linux ARM64, puis transfère le binaire et déclenche la sauvegarde et les contrôles de déploiement. Une erreur arrête la chaîne. Les tests et la compilation ne sont exécutés qu’une fois.
+
+Il fonctionne avec `RemoteSigned` sans modifier la stratégie d’exécution, sans `Bypass` et sans demande de droits administrateur. Le chemin du dossier peut contenir des espaces et des apostrophes. Les `.ps1` sont encodés en UTF-8 avec BOM pour Windows PowerShell 5.1 ; npm est appelé avec `npm.cmd` sous Windows.
+
+Sans argument, le lanceur demande l’adresse du routeur. Appuyer sur Entrée prépare seulement les binaires, sans déploiement. L’adresse doit être une IP ou un nom d’hôte, sans `http://`, chemin ou mot de passe. Aucun identifiant secret n’est enregistré dans les sources. Les fichiers internes `Test.ps1`, `Build.ps1`, `Deploy.ps1` et `Start.ps1` restent disponibles pour le développement et les options avancées ; le parcours normal utilise uniquement `INSTALLER-OKOKO.cmd`.
 
 Pour les tests Playwright : lancer l’application locale, puis dans `frontend/`, exécuter `npx playwright install chromium` une seule fois et `npm run test:browser`. `CHROMIUM_PATH` permet d’utiliser un navigateur déjà installé. `OKOKO_REAL_BACKEND=1` active aussi les vérifications HTTP non simulées, à utiliser avec une base temporaire et une chaudière non configurée. Les autres tests utilisent des réponses simulées explicitement identifiées, exclusivement dans le navigateur de test.
 
@@ -39,10 +45,10 @@ Le routeur exécute uniquement le binaire Go. Aucun Node.js, npm, frontend dev s
 Préparer SSH/SCP, `sqlite3`, `sha256sum` et `wget` sur le routeur pour le déploiement et la sauvegarde. Ne pas télécharger de base vide à la place de la base existante.
 
 ```powershell
-.\scripts\Deploy.ps1 -Router ADRESSE_DU_ROUTEUR
+.\INSTALLER-OKOKO.cmd ADRESSE_DU_ROUTEUR
 ```
 
-Chemins par défaut compatibles avec l’ancien script : binaire `/root/chaudiere-go`, configuration `/root/config.json`, base `/root/chaudiere/chaudiere.db`, port 8888. Utiliser `-AppPath`, `-ConfigPath`, `-DatabasePath` et `-Port` si l’installation diffère. Le port doit correspondre à `listen` dans la configuration. Si le service procd `/etc/init.d/okoko` existe, il est arrêté et redémarré sans être réécrit. Sinon le programme est démarré directement ; aucun nouveau service de démarrage automatique n’est installé par ce script.
+Chemins par défaut compatibles avec l’ancien script : binaire `/root/chaudiere-go`, configuration `/root/config.json`, base `/root/chaudiere/chaudiere.db`, port 8888. Pour une installation utilisant des chemins différents, les options `-AppPath`, `-ConfigPath`, `-DatabasePath` et `-Port` du module interne `scripts/Deploy.ps1` restent disponibles après déblocage par le lanceur. Le port doit correspondre à `listen` dans la configuration. Si le service procd `/etc/init.d/okoko` existe, il est arrêté et redémarré sans être réécrit. Sinon le programme est démarré directement ; aucun nouveau service de démarrage automatique n’est installé par ce script.
 
 Le script vérifie le SHA-256 du binaire transféré, arrête l’ancienne instance, sauvegarde SQLite et contrôle la sauvegarde avec `PRAGMA quick_check`. Il conserve la configuration privée uniquement sur le routeur. Il vérifie `/health` puis `/api/v3/snapshot`. Ces contrôles établissent la disponibilité de l’application, pas la qualité de mesures réelles ; les vérifier ensuite à l’écran.
 

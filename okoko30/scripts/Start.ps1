@@ -1,4 +1,4 @@
-param([string]$Config = 'config.example.json')
+﻿param([string]$Config = 'config.example.json')
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
 Push-Location "$root/backend"

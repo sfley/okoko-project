@@ -1,0 +1,45 @@
+{
+  "powershell": "7.5.4",
+  "platform": "Debian GNU/Linux 13 (trixie)",
+  "windows_cmd_executed": false,
+  "unblock": "simulated",
+  "deployment": "simulated",
+  "results": [
+    {
+      "name": "single launcher, valid PowerShell syntax and Windows encoding",
+      "status": "passed"
+    },
+    {
+      "name": "preparation runs tests and build once without deployment",
+      "status": "passed"
+    },
+    {
+      "name": "deployment follows tests and build, without duplicate work",
+      "status": "passed"
+    },
+    {
+      "name": "failure stops the chain at test",
+      "status": "passed"
+    },
+    {
+      "name": "failure stops the chain at build",
+      "status": "passed"
+    },
+    {
+      "name": "failure stops the chain at deploy",
+      "status": "passed"
+    },
+    {
+      "name": "invalid target rejected before tests or deployment",
+      "status": "passed"
+    },
+    {
+      "name": "real bootstrap unblocks before loading scripts, including paths with spaces and apostrophes",
+      "status": "passed"
+    },
+    {
+      "name": "unblock failure exits nonzero before running any script",
+      "status": "passed"
+    }
+  ]
+}

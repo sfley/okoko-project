@@ -1,4 +1,4 @@
-param(
+﻿param(
  [Parameter(Mandatory=$true)][ValidatePattern('^[A-Za-z0-9.-]+$')][string]$Router,
  [ValidatePattern('^[A-Za-z0-9_-]+$')][string]$User = 'root',
  [ValidatePattern('^/[A-Za-z0-9_./-]+$')][string]$AppPath = '/root/chaudiere-go',
@@ -11,7 +11,7 @@ $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
 if (-not $UseExistingBuild) { & "$PSScriptRoot/Build.ps1" }
 $binary = "$root/build/okoko30-linux-arm64"
-if (-not (Test-Path $binary)) { throw 'Binaire absent : compiler d’abord.' }
+if (-not (Test-Path $binary)) { throw "Binaire absent : compiler d'abord." }
 $hash = (Get-FileHash $binary -Algorithm SHA256).Hash.ToLower()
 $upload = "$AppPath.upload-$([guid]::NewGuid().ToString('N'))"
 $target = "${User}@${Router}"

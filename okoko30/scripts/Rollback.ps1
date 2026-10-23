@@ -1,4 +1,4 @@
-param([Parameter(Mandatory=$true)][ValidatePattern('^[A-Za-z0-9.-]+$')][string]$Router,[Parameter(Mandatory=$true)][ValidatePattern('^/[A-Za-z0-9_./-]+$')][string]$BackupDir,[ValidatePattern('^[A-Za-z0-9_-]+$')][string]$User='root',[ValidatePattern('^/[A-Za-z0-9_./-]+$')][string]$AppPath='/root/chaudiere-go',[ValidatePattern('^/[A-Za-z0-9_./-]+$')][string]$ConfigPath='/root/config.json')
+﻿param([Parameter(Mandatory=$true)][ValidatePattern('^[A-Za-z0-9.-]+$')][string]$Router,[Parameter(Mandatory=$true)][ValidatePattern('^/[A-Za-z0-9_./-]+$')][string]$BackupDir,[ValidatePattern('^[A-Za-z0-9_-]+$')][string]$User='root',[ValidatePattern('^/[A-Za-z0-9_./-]+$')][string]$AppPath='/root/chaudiere-go',[ValidatePattern('^/[A-Za-z0-9_./-]+$')][string]$ConfigPath='/root/config.json')
 $ErrorActionPreference='Stop'
 $script=@'
 set -eu

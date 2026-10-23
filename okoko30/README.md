@@ -31,7 +31,13 @@ go run ./cmd/chaudiere -config config.example.json
 
 L’application écoute par défaut sur le port 8888. Sans URL privée, elle démarre avec des états absents et les archives historiques déjà fournies par la version 2.0. Elle ne fabrique aucune télémétrie. Les données de test se trouvent uniquement dans `frontend/tests/` et les tests Go ; elles ne sont pas intégrées à l’application.
 
-Sous Windows, les lanceurs `01-TESTER.cmd`, `02-COMPILER-ARM64.cmd`, `03-DEMARRER-LOCAL.cmd` et `04-DEPLOYER.cmd` appellent les scripts PowerShell correspondants. Le déploiement exige l’adresse du routeur : `04-DEPLOYER.cmd -Router ADRESSE_DU_ROUTEUR`.
+Sous Windows, un seul lanceur enchaîne le déblocage des fichiers, les prérequis, les tests, la compilation ARM64 et le déploiement :
+
+```powershell
+.\INSTALLER-OKOKO.cmd ADRESSE_DU_ROUTEUR
+```
+
+Sans argument, il demande l’adresse du routeur ; une réponse vide limite le travail aux tests et à la compilation. Le lanceur respecte `RemoteSigned`, sans `Set-ExecutionPolicy` ni `Bypass`. Il s’arrête à la première erreur et conserve les sauvegardes et le retour arrière. Les scripts dans `scripts/` sont ses modules internes : aucune succession de scripts à lancer manuellement.
 
 ## Aucun mot de passe dans les sources
 

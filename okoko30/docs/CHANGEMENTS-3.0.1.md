@@ -16,3 +16,7 @@ Aucun calcul de consommation modifié. Les dispositions personnalisées existant
 Conserver votre configuration privée et le chemin de la base existante. Le déploiement remplace le binaire, pas vos données. Le fuseau d’affichage est Europe/Paris par défaut et l’ancien journal est interprété en UTC, sans ajout obligatoire à votre configuration actuelle. Les nouveaux champs facultatifs sont documentés dans `INSTALLATION.md`.
 
 Le script de déploiement conserve le binaire précédent et une sauvegarde SQLite. La livraison 3.0.0 reste aussi disponible dans le commit Git `489d135e73303b78eb05b5d27059db11baae275e` de la branche `okoko-v3.0`. Ne pas restaurer une ancienne base à la place de données nouvelles pour simplement revenir au binaire précédent.
+
+## Lanceur Windows unifié
+
+`INSTALLER-OKOKO.cmd` remplace les quatre lanceurs numérotés. Il débloque les fichiers sans modifier `RemoteSigned`, vérifie les outils, enchaîne tests, compilation et déploiement si un routeur est indiqué. Les doublons d’exécution sont évités ; la première erreur arrête la chaîne. Les scripts PowerShell ont un encodage compatible Windows PowerShell 5.1 et les erreurs de syntaxe dues aux apostrophes typographiques ont été corrigées. Aucun changement de l’application, des calculs ou des données.

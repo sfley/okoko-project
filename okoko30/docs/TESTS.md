@@ -17,6 +17,8 @@ Contrôles exécutés le 23 octobre 2026 dans l’environnement cloud Linux amd6
 | Linux ARM64, CGO désactivé | Application et outil d’import compilés ; format ELF aarch64 statique contrôlé, exécution sur routeur non effectuée |
 | Linux amd64 | Application démarrée ; six routes SPA et API réellement ouvertes par Chromium |
 | Conservation des fonctions | 7 fonctions identiques après normalisation Go : les deux calculs de consommation et cinq fonctions CSV ; empreintes dans `source-preservation.json` |
+| Lanceur unifié Windows | 9 contrôles réussis sous PowerShell 7.5.4/Linux : syntaxe, encodage, ordre, arrêt sur erreur et déblocage préalable simulé |
+| Chaîne de préparation PowerShell | `Install.ps1 -PrepareOnly` exécuté sous Linux : npm ci, 5 tests frontend, build frontend, Go mod verify/vet/tests, 9 contrôles du lanceur, compilation ARM64 de l’application et de l’outil |
 | Scripts shell | Syntaxe de `remote-deploy.sh`, `install-cloud.sh`, `start-cloud.sh` et `stop-cloud.sh` vérifiée avec `sh -n` ; arrêt et redémarrage local exécutés |
 | Confidentialité de l’archive | Configurations d’exemple sans URL privée ; bases, configurations locales et caches exclus ; identifiant de connexion initial recherché sans l’afficher |
 
@@ -46,7 +48,7 @@ Les tests Go couvrent la conservation des recharges/corrections au redémarrage,
 
 - Aucun accès à votre chaudière réelle, NAS réel ou SQLite de production. Le JSON fourni est testé, la connexion matérielle après déploiement reste à vérifier.
 - ARM64 compilé, pas exécuté sur votre routeur. Mémoire et performances OpenWrt non mesurées ici.
-- Scripts PowerShell relus et inclus, pas exécutés sous Windows. Déploiement SSH et restauration non exécutés sur votre matériel.
+- Scripts PowerShell analysés et préparation complète exécutée sous PowerShell 7.5.4/Linux. Windows PowerShell 5.1, le `.cmd` sous Windows et la suppression réelle des marques de téléchargement Windows n’ont pas été exécutés. Les contrôles de déblocage et de déploiement utilisent des doubles de test. Déploiement SSH et restauration non exécutés sur votre matériel.
 - Les anciens imports sans fuseau sont interprétés en UTC conformément au décalage confirmé. Une installation ayant utilisé une autre horloge peut préciser `legacy_import_timezone` ; les dates illisibles restent signalées sans conversion arbitraire.
 - Les compteurs historiques d’import sont ceux déjà enregistrés, sans reconstitution des statistiques manquantes.
 - Le cockpit reste propre au navigateur. Aucun écran tactile physique ou Safari testé.
@@ -54,3 +56,9 @@ Les tests Go couvrent la conservation des recharges/corrections au redémarrage,
 - Le NAS reste facultatif ; un montage NFS bloqué dans le noyau peut immobiliser le travailleur d’import. Les vues temps réel n’accèdent pas au NAS. Un blocage matériel n’a pas été reproduit.
 - Les détails météo dépendent des créneaux transmis. Les formats non reconnus restent visibles sans affectation arbitraire.
 - La sauvegarde SQLite est déclenchée à la demande ; aucune nouvelle sauvegarde périodique annoncée.
+
+## Lanceur Windows unique
+
+La livraison remplace les quatre fichiers `.cmd` numérotés par `INSTALLER-OKOKO.cmd`. Le bootstrap PowerShell utilise `Unblock-File` avant le premier `.ps1`, sans modifier la stratégie d’exécution. L’adresse du routeur est transmise par variable d’environnement pour garder les chemins contenant espaces et apostrophes hors du code de la commande. Les messages et les codes d’échec sont propagés ; aucun appel réseau de déploiement n’a été exécuté pour cette validation.
+
+Les neuf contrôles et leur portée sont enregistrés dans `windows-launcher-tests.json`. Le journal de la préparation réelle Linux se trouve dans `install-prepare-linux.txt`. Les deux erreurs de syntaxe des anciens modules Build/Deploy, dues aux apostrophes typographiques dans des chaînes PowerShell, ont été corrigées. Les modules ont été encodés avec BOM pour Windows PowerShell 5.1 ; Git impose les fins de ligne CRLF aux scripts Windows et LF aux scripts shell. Les tests du lanceur font désormais partie du module de tests. Le backend et le frontend de l’application sont inchangés par cette mise à jour.
